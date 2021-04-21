@@ -1,0 +1,35 @@
+.project-items{
+    padding-top: 5px;
+    margin-bottom: 35px;
+    border: solid 1px black;
+    background-color: white;
+    border-radius: 5px;
+}
+
+h4{
+    padding: 10px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.down-icon::after{
+    content: "\2BC6";
+    font-size: 25px;
+    float: right;
+    margin-right: 15px;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+.down-icon.active::after{
+    content: "\2BC5";
+}
+
+.expanded{
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+.expanded-content{
+    padding: 10px;
+}

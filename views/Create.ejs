@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create</title>
+    <!-- Latest compiled and minified CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="//code.jquery.com/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <link rel="stylesheet" type="text/css" href="./css/Navbar.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-tagsinput.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-datetimepicker.min.css">
+</head>
+<body>
+    <!-- for navbar -->
+    <%- include('partials/navbar.ejs') %>
+
+    <!--Starting of main body-->
+    <main>
+        <h1 style="margin-top: -140px;">Create Your Own Project</h1>
+
+        <div>
+            <form action="/Create" method="POST" style="margin-top: -20px;" id="project-detail">
+                <div class="col-10 justify-content-center" style="margin-left: 110px;">
+                    <label class="col-1" for="project-title">Title:</label>
+                    <input class="col-9" type="text" id="project-title" name="title" style="width: 700px;">
+                </div>
+                <br>
+                <div class="col-10 row justify-content-center" style="margin-left: 30px;">
+                    <label class="col-2" for="project-title">Description:</label>
+                    <textarea class="col-9" form="project-detail" name="description" style="margin-left: -10px; height: 100px;"></textarea>
+                </div>
+                <br>
+                <div class="col-10 row justify-content-center" style="margin-left: 25px;">
+                    <label class="col-2" for="project-title">Functionality:</label>
+                    <input type="text" name="functionality" id="functionality" data-role="tagsinput" style="margin-left: 10px;">
+                </div>
+                <br>
+                <div class="col-11 row justify-content-center" style="margin-left: -5px;">
+                    <label class="col-3" for="project-title">End Date:</label>
+                    <input type="date" class="col-8" name="enddate" value="2021-04-22" min="2018-01-01" style="margin-left: -105px;">
+                </div>
+                <div class="col-9 row justify-content-around" style="margin-top: 40px; margin-left: 120px;">
+                    <button id="create-btn" type="submit">Create</button>
+                </div>
+               <script>
+                    // $('#create-btn').on('click',function(){
+                    //     var v = $("#functionality").tagsinput('items');
+                    //     $.ajax({
+                    //         type: 'POST',
+                    //         url: '/Create',
+                    //         data: v,
+                    //         success: function(data){
+                    //             console.log(data)
+                    //         }
+                    //     })
+                    // })
+  
+                </script>
+            </form>
+        </div> 
+        <script type="text/javascript" src="js/bootstrap-tagsinput.js"></script>
+        <script type="text/javascript" src="js/bootstrap-datetimepicker.min.js"></script>
+    </main>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<% if (errors == ''){ %>
+
+<% } else{%>
+        <div class="d-flex justify-content-center">
+            <div style="width:99%; text-align:center" class="alert alert-primary" role="alert">
+                <%-JSON.stringify(errors.errors[0].msg)%>
+            </div>
+        </div>
+<%}%>
+
+<% if(locals.message){ %>
+    <div class="alert alert-success" role="alert">
+        <strong>Well done!</strong> <%=message.success%>
+    </div>
+<% } %>
+
+
+<% //errs = JSON.stringify(errors.errors) %>
+<% //JSON.parse(errs).forEach( element => { %>
+
+<% //}) %>
+

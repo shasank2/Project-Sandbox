@@ -1,0 +1,39 @@
+<%project._id%>
+<% project.forEach( element => {  %> 
+    <% displayID = element._id%>
+    <% displayTitle = element.title %>
+    <% displayDesc = element.description%>
+    <li>
+        <div class="project-items">
+            <h4 id="<%-displayID%>"><%-displayTitle%></h4>
+            <span class="down-icon"></span>
+            <div class="expanded">
+                <div class="expanded-content"><%-displayDesc%></div>
+            </div>
+        </div>
+    </li>
+<%})%>
+
+<script>
+    //Ajax post request to pass ID
+    $("h4").click(function(){
+        h4ID = $(this).attr("id");
+        $.ajax({
+        type: 'POST',
+        url: '/Projects',
+        data: {h4ID},
+        success: function(data){
+           window.location='/Kanban'
+        }
+        })
+    })
+
+    // $.ajax({
+    //     type:"POST",
+    //     url:"/GanttChart",
+    //     data:{displayID},
+    //     success: function(data){
+    //         window.location='/GanttChart'
+    //     }
+    // })
+</script>

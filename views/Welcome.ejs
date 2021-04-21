@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Welcome
+        </title>
+        <link rel="icon" href="../sandbox.png">
+        
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="./css/style.css">
+        <link rel="stylesheet" type="text/css" href="./css/Welcome.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <h3 class="nav-brand">Project Sandbox</h3>
+            </div>
+        </nav>
+        <%- include('partials/message.ejs') %> 
+        <!-- <div  class="alert alert-success" role="alert"><strong>Well done!</strong></div> -->
+        <main>
+            <h1>Get Started With Your Idea</h1>
+            <button id="login_id">Login</button>
+            <button id="signup_id">Sign Up</button>
+
+
+        <!-- Login up Popup box -->
+        <div id="login_form" class="login_class">
+            <div class="login_content">
+                <div class="popup_header" style="width: 100%;">
+                    <span class="close_class">&times;</span>
+                    <h3  style="margin-top: 45px; margin-left: 60px;">Login to Your Account</h3>
+                </div>
+                <!-- Login up form -->
+                <form action="/login" method="POST" style="margin-top: 20px;" class="row-2">
+                    <div class="col-2 justify-content-center email_div" style="margin-left: 60px;">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" id="email" style="width: 260px;">
+                    </div>
+                    <div class="col-2 justify-content-center password_div" style="margin-left: 60px; margin-top: 10px;">
+                        <label for="password">Password</label>
+                        <input type="password"  name="password" id="password" style="width: 260px;">
+                    </div>
+                        <button type="submit" style="margin-left: 110px; margin-top: 30px;">Login</button>
+                </form>
+            </div>
+        </div>
+        
+
+        <!-- Sign up Popup box -->
+        <div id="signup_form" class="signup_class">
+            <div class="signup_content">
+                <div class="popup_header" style="width: 100%;">
+                    <span class="close_class1">&times;</span>
+                    <h3  style="margin-top: 25px; margin-left: 85px;">Create an Account</h3>
+                </div>
+
+                <!-- Sign up form -->
+                <form action="/signup" method="POST" style="margin-top: 10px;" class="row-2">
+                    <div class="col-3 justify-content-center Fullname_div" style="margin-left: 60px;">
+                        <label for="fullname">Username</label>
+                        <input type="text" name="username" id="username" style="width: 260px;">
+                    </div>
+                    <div class="col-2 justify-content-center email_div" style="margin-left: 60px; margin-top: 10px;">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" id="email" style="width: 260px;">
+                    </div>
+                    <div class="col-2 justify-content-center password_div" style="margin-left: 60px; margin-top: 10px;">
+                        <label for="password">Password</label>
+                        <input type="password" name="password" id="password" style="width: 260px;">
+                    </div>
+                    <div class="col-5 justify-content-center conf_password_div" style="margin-left: 60px; margin-top: 10px;">
+                        <label for="conf_password">Confirm Password</label>
+                        <input type="password" name="conf_password" id="conf_password" style="width: 260px;">
+                    </div>
+                        <button type="submit" style="margin-left: 117px; margin-top: 25px;">Create</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+
+    <script>
+        //variable for login form itself.. this made visible and invisible
+        var login_class = document.getElementById("login_form");
+        // variable the login button 
+        var login_btn = document.getElementById("login_id");
+
+        //close button variable
+        var close_btn = document.getElementsByClassName("close_class")[0];
+
+        //close button function
+        close_btn.onclick = function(){
+            login_class.style.display = "none";
+        }
+        
+        //display function for login
+        login_btn.onclick = function() {
+            login_class.style.display = "block";
+        }
+
+
+
+        //sign up form varaiable for making it visisble and invisible
+        var signup_class = document.getElementById("signup_form");
+        
+        //sign up button variable
+        var signup_btn = document.getElementById("signup_id");
+
+        //close button variable
+        var close_btn = document.getElementsByClassName("close_class1")[0];
+
+        //close button function
+        close_btn.onclick = function(){
+            signup_class.style.display = "none";
+        }
+
+        //display fucntion for signup
+        signup_btn.onclick = function(){
+            signup_class.style.display = "block";
+        }
+    </script>
+    </body>
+</html>

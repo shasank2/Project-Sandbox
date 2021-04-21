@@ -1,0 +1,25 @@
+ul{
+    list-style-type:none;
+    color: black;
+}
+
+.navbar-toggler{
+    padding: 0px;
+    border: 1px;
+}
+
+ul > li {
+    font-size: 17px;
+    font-weight:500;
+    margin-right: 18px;
+}
+a{
+    color: rgb(70, 70, 70);
+}
+a:hover{
+    text-decoration: none;
+    color: black;
+}
+h3{
+    padding-top: 7px;
+}
