@@ -4,108 +4,193 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./img/sandbox.png">
     <title>Kanban Board</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./css/jkanban.css">
     <link rel="stylesheet" type="text/css" href="./css/kanban_style.css">
     <link rel="stylesheet" type="text/css" href="./css/Navbar.css">
+    <style>
+
+      #sprint-header{
+        text-align: center;
+      }
+
+      .kanban-sprint{
+        display:none;
+      }
+
+      .active{
+        display: block;
+      }
+    </style>
 </head>
 <body>
     <%- include('partials/navbar.ejs') %>
     <!--Starting of main body-->
     <main>
-        <div id="myKanban"></div>
+      <div class="dropdown">
+        <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Select Sprint
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <% LoadedFunctionalities.forEach((element)=>{ %>
+            <a id="dd<%-element.sprintID%>" class="dropdown-item" onclick="dd_onclick(this.classList[1])"><%-element.title%></a>
+          <% }) %>
+        </div>
+      </div>
+        <div><h4 id="sprint-header">Sprint 1</h4></div>
+
+      <br>
+        <div id="board_holder"></div>
+        <br><br>
+        <div style="text-align: center;">
+          <button onclick="location.href = 'http://localhost:3000/GanttChart';">Gantt chart</button>
+          <button onclick="SaveBoard()">Save</button>
+        </div>
     </main>
-    <%- include('partials/KanbanLoader.ejs') %>
 
     <script src="./js/jkanban.js"></script>
-    <script>  
+    <script> 
+      var data = <%- JSON.stringify(LoadedFunctionalities) %>;
+
+      //Dynamic drop down
+      dropdown_items = document.getElementsByClassName('dropdown-item')
+      for (let index = 0; index < dropdown_items.length; index++) {
+        const element = dropdown_items[index];
+        element.classList.add(data[index].sprintID)
+      }
       
-      var KanbanTest = new jKanban({
-        element: "#myKanban",
-        gutter: "10px",
-        widthBoard: "450px",
-        itemHandleOptions:{
-          enabled: true,
-        },
-        responsivePercentage: true, 
+      //Function to toggle active class when clicked
+      function dd_onclick(clicked_id){
+        document.getElementById('sprint-header').innerHTML = document.getElementsByClassName(clicked_id)[0].innerHTML
+
+        board_childern = document.getElementById('board_holder').children
+        for (let index = 0; index < board_childern.length; index++) {
+          const element = board_childern[index];
+          element.classList.remove("active")
+        }
+        for (let index = 0; index < board_childern.length; index++) {
+          const element = board_childern[index];
+          if (element.id == clicked_id) {
+            element.classList.add("active")
+          }
+        }
+      }
+    
+      
+
+    //Dynamic Kanban board
+    data.forEach(kanban_board => {
+        value_for_element = kanban_board.sprintID
+
+        var newBoard = document.createElement("div")
+        newBoard.setAttribute("id",value_for_element)
+        newBoard.setAttribute("class", "kanban-sprint")
+        newBoard.classList.add(value_for_element)
+        document.getElementById("board_holder").appendChild(newBoard)
+
+        var KanbanTest = new jKanban({
+          element: "#" + value_for_element,
+          gutter: "10px",
+          widthBoard: "450px",
         click: function(el) {
           console.log("Trigger on all items click!");
         },
         dropEl: function(el, target, source, sibling){
           console.log(target.parentElement.getAttribute('data-id'));
-          console.log(el, target, source, sibling)
+          const drop_date = new Date();
+          //updating status
+          status_update = target.parentElement.children[0].children[0].innerHTML;
+          el.setAttribute('data-status',status_update)
+          if (target.parentElement.getAttribute('data-id')=="_doing") {
+            el.setAttribute('start_date',drop_date)
+          } else if (target.parentElement.getAttribute('data-id')=="_done") {
+            el.setAttribute('end_date',drop_date)
+          }
+          console.log(el,source,target)
         },
         buttonClick: function(el, boardId) {
           console.log(el);
           console.log(boardId);
-          // create a form to enter element
-          var formItem = document.createElement("form");
-          formItem.setAttribute("class", "itemform");
-          formItem.innerHTML =
-            '<div class="form-group"><textarea class="form-control" rows="2" autofocus></textarea></div><div class="form-group"><button type="submit" class="btn btn-primary btn-xs pull-right">Submit</button><button type="button" id="CancelBtn" class="btn btn-default btn-xs pull-right">Cancel</button></div>';
-
-          KanbanTest.addForm(boardId, formItem);
-          formItem.addEventListener("submit", function(e) {
-            e.preventDefault();
-            var text = e.target[0].value;
-            KanbanTest.addElement(boardId, {
-              title: text
-            });
-            formItem.parentNode.removeChild(formItem);
-          });
-          document.getElementById("CancelBtn").onclick = function() {
-            formItem.parentNode.removeChild(formItem);
-          };
         },
-        itemAddOptions: {
-          enabled: true,
-          content: 'Add New Function',
-          class: 'custom-button',
-          footer: true
-        },
-        itemHandleOptions: {
-      enabled: false, 
-    },
         dragBoards: false,
-        
         boards: [
           {
-            id: "_task",
-            title: "Tasks",
+            id: "_todo",
+            title: "To Do",
             class: "info,good",
-            dragTo: ["_working"],
-            item: [
-              {
-                id: "func1",
-                title: "func 1"
-              },
-              {
-                id: "func2",
-                title: "Func 2"
-              }
-            ]
+            dragTo: ["_doing"],
+            item: []
           },
           {
-            id: "_working",
-            title: "Working",
+            id: "_doing",
+            title: "Doing",
             class: "warning",
-            item: [
-            ]
+            item: []
           },
           {
             id: "_done",
             title: "Done",
             class: "success",
-            dragTo: ["_working"],
             item: []
           }
         ]
       });
-    </script>
+      //Array to load data to the board
+      kanban_board.tasks.forEach(myFunction);
+      function myFunction(value, index, array) {
+        console.log(value)
+        if(value.status=="To Do"){
+          KanbanTest.addElement("_todo", value);
+        }else if (value.status=="Doing") {
+          KanbanTest.addElement("_doing",value);
+        } else {
+          KanbanTest.addElement("_done",value)
+        }
+      }
+    })
+
+    document.getElementsByClassName('kanban-sprint')[0].classList.add("active")
+
+//comeplete this
+      function SaveBoard() {
+        list_update = []
+        all_boards = document.getElementById('board_holder').children
+        for (const i of all_boards) {   //i.e. sprint 1 sprint 2
+          boards = i.children[0].children
+          for (const j of boards) {      //i.e. to do, doing, done
+            items = j.children[1].children
+            if (items.length>0) {          // if todo, doing, done dont have any items
+              for (const k of items){         // items/tasks of each board
+                item_update={
+                  id: k.getAttribute('data-eid'),
+                  status: k.getAttribute('data-status'),
+                  start_date: k.getAttribute('start_date'),
+                  end_date: k.getAttribute('end_date')
+                }
+                console.log("Items to be updated",item_update)
+                list_update.push(item_update)
+              }
+            }
+          }
+        }
+
+        $.ajax({
+          type: 'POST',
+            url: '/Kanban',
+            data: {
+              list_update: JSON.stringify(list_update),
+            },
+            success: function(){
+            }
+        })
+      }
+  </script>
 </body>
 </html>

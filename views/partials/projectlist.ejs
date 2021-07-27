@@ -3,8 +3,8 @@
     <% displayID = element._id%>
     <% displayTitle = element.title %>
     <% displayDesc = element.description%>
-    <li>
-        <div class="project-items">
+    <li >
+        <div class="project-items" style="background-color: rgb(255, 228, 196);">
             <h4 id="<%-displayID%>"><%-displayTitle%></h4>
             <span class="down-icon"></span>
             <div class="expanded">
@@ -18,10 +18,14 @@
     //Ajax post request to pass ID
     $("h4").click(function(){
         h4ID = $(this).attr("id");
+        h4Name = $(this).text();
         $.ajax({
         type: 'POST',
         url: '/Projects',
-        data: {h4ID},
+        data: { 
+            h4ID:h4ID,
+            h4Name:h4Name 
+        },
         success: function(data){
            window.location='/Kanban'
         }

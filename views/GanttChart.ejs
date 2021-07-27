@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./img/sandbox.png">
     <title>Gantt Chart</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -31,19 +32,24 @@
     <!--Starting of main body-->
     <main>
         <div id="gantt_here" style='width: 100%; height: 400px; max-height: fit-content; margin-top: -178px;'></div>
+        <br>    
+        <button onclick="location.href = 'http://localhost:3000/Kanban';">Kanban Board</button>
     </main>
-    <%- LoadedFunctionalities[1] %>
 
-    <script>
-        gantt.init("gantt_here");
-            var data = { 
-                tasks:[ 
-                    {id:1, text:"bhjcv", desc:"jhfvgt" },
-                    //{id:2, text:LoadedFunctionalities[1][0].Functionality }
-                    //{id:3, text:LoadedFunctionalities[2][0].Functionality }
-                ]
-           }
-            gantt.parse(data);
-    </script>
+<script>
+    var tasks = <%- JSON.stringify(LoadedFunctionalities) %>;
+
+    gantt.config.date_format = "%Y-%m-%d";
+    
+    var data = {tasks}
+                                        
+    gantt.init("gantt_here");
+    gantt.parse(data);
+
+    // var dp = new gantt.dataProcessor("/GanttChart");
+    // dp.init(gantt);
+    // dp.setTransactionMode("REST");
+</script>
+
 </body>
 </html>

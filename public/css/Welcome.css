@@ -16,7 +16,7 @@
     width: 400px; 
     height: 350px;
     margin: auto;
-    background-color: rgb(230, 230, 230);
+    background: rgb(247, 226, 169);
     display: flex;
     flex-direction: column;
 }
@@ -49,7 +49,7 @@
     width: 400px; 
     height: 450px;
     margin: auto;
-    background-color: rgb(230, 230, 230);
+    background: rgb(247, 226, 169);
     display: flex;
     flex-direction: column;
 }

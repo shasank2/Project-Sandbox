@@ -73,6 +73,12 @@ app.use('/Projects', require('./routes/userRoute'))
 //Create page
 app.use('/Create', require('./routes/userRoute'))
 
+//Sprints page
+app.use('/Sprints', require('./routes/userRoute'))
+
+//Teams page
+app.use('/Teams', require('./routes/userRoute'))
+
 //Methodologies page
 app.use('/Methodologies', require('./routes/userRoute'))
 
@@ -88,6 +94,15 @@ app.use('/GanttChart', require('./routes/userRoute'))
 //Kanban Board page
 app.use('/Kanban', require('./routes/userRoute'))
 
+
+//Admin panel
+app.use('/Adminlogin',require('./routes/userRoute'))
+
+app.use('/Adminuser',require('./routes/userRoute'))
+
+app.use('/Adminfeedbacks',require('./routes/userRoute'))
+
+app.use('/Adminprojects',require('./routes/userRoute'))
 //ports
 app.listen(port, ()=>{
     console.log(`listening at port ${port}....`)

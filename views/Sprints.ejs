@@ -1,0 +1,258 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="./img/sandbox.png">
+  <title>Sprints</title>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
+  <link rel="stylesheet" type="text/css" href="./css/Navbar.css">
+  <link rel="stylesheet" href="./css/jkanban.css">
+  <link rel="stylesheet" type="text/css" href="./css/kanban_style.css">
+  
+  <style>
+    .alert-dark{
+      display:none;
+      position:absolute; 
+      width: 100%; 
+      opacity: 1;
+      z-index: index 10;
+      text-align: center;
+      font-weight: 500;
+    }
+
+
+
+    #myKanban {
+      overflow-x: auto;
+      padding: 20px 0;
+    }
+    
+    .modal-content{
+      background: rgb(255, 234, 177);
+    }
+
+    .modal-header{
+      background: rgb(252, 190, 96);
+      margin-bottom: 20px;
+    }
+    
+    .modal-buttons{
+      text-align: right;
+    }
+    
+    .modal-buttons>button{
+      width: 100px;
+    }
+  </style>
+</head>
+
+<body>
+  <%- include('partials/navbar.ejs') %>
+  <!--Starting of main body-->
+  <main style="position: relative;">
+    <div id="alert-dark" class="alert alert-dark" role="alert">
+        Not enough days remaining
+      </div>
+      <h2>
+        <center>Manage Sprints</center>
+      </h2><br>
+      <p style="margin: -20px 0px 0px 30px;"><b>Remaining Days: <span id="remaining-days"><%-remainingtime%></span></b></p>
+      <div id="myKanban"></div>
+      
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+      aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Add sprint</h5>
+          </div>
+          <div class="modal-body">
+            <span style="margin-left: 20%;">
+              Number of days for Sprint: 
+            </span>
+            <span>
+              <input type="number" id="sprint-assigned-days" name="sprint-assigned-days" value="4" min="4" max="9">
+            </span>
+            <br><br>
+              <div class="modal-buttons">
+                <button id="AddConfirm">Add</button>
+                <button id="close-btn" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <!-- Page buttons -->
+      <div style="text-align: center;">
+        <button id="AddSprint" data-toggle="modal" data-target="#exampleModalCenter">Add Sprint</button>
+        <button id="Next">Next</button>
+      </div>
+    </main>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+      crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"></script>
+    <script src="./js/jkanban.js"></script>
+    <script>
+      function alert_disappear() {
+        document.getElementById("alert-dark").style.display = "none"
+      }
+      var data = <%- JSON.stringify(LoadedFunctionalities) %>;
+
+      var KanbanTest = new jKanban({
+        element: "#myKanban",
+        gutter: "10px",
+        widthBoard: "450px",
+        click: function (el) {
+          console.log("Trigger on all items click!");
+        },
+        context: function (el, e) {
+          console.log("Trigger on all items right-click!");
+        },
+        dropEl: function (el, target, source, sibling) {
+          console.log(target.parentElement.getAttribute('data-id'));
+          console.log(el, target, source, sibling )
+          console.log(target.children[0].innerHTML)
+        },
+        buttonClick: function (el, boardId) {
+          console.log(el);
+          console.log(boardId);
+        },
+        boards: [
+          {
+            id: "_unassigned",
+            title: "Unassigned Tasks",
+            class: "unassigned",
+            item: [] 
+          }
+        ]
+      });
+
+      //Button for adding sprint board
+      var addConfirm = document.getElementById("AddConfirm");
+      var SprintNumber = 1;
+
+      addConfirm.addEventListener("click", function () {
+
+        //Claculate number of remaining days for each sprint
+        var total_remain = document.getElementById('remaining-days').innerHTML
+        var days_for_sprint = document.getElementById('sprint-assigned-days').value  //value because this is not submitted
+        
+        var new_remain = (parseInt(total_remain)-parseInt(days_for_sprint))
+        if (new_remain < 0) {
+          document.getElementById('alert-dark').innerHTML = "Not enough days remaining"
+          document.getElementById('alert-dark').style.display = "block"
+          setTimeout(alert_disappear,5000)
+        } else {
+        console.log('number of days remining = '+ new_remain);
+        document.getElementById('remaining-days').innerHTML = new_remain
+
+        SprintID = "_sprint" + SprintNumber;
+        SprintTitle = "Sprint " + SprintNumber;
+        SprintClass = "sprint" + SprintNumber;
+        KanbanTest.addBoards([
+          {
+            id: SprintID,
+            title: SprintTitle,
+            class: SprintClass,
+            item: []
+          }
+        ])
+        var title = document.querySelector('.' + CSS.escape(SprintClass));
+        console.log(title)
+        
+        //Days remain on right side of each Kanban board
+        title.innerHTML += '<span id="sprint_days" style="float: right; padding-right:5px; font-weight:500">Days : <span id="sprint_days_value">'+days_for_sprint+'</span></span>';
+        SprintNumber += 1;
+        document.getElementById('alert-dark').style.display = "none"
+      }
+        document.getElementById("close-btn").click();
+      });
+
+
+      //Next button click function
+      $( "#Next" ).on( "click", next )
+
+      
+      //Function for next button
+      function next() {
+        if (document.querySelectorAll('.kanban-board')[0].children[1].children.length > 0) {
+          document.getElementById('alert-dark').innerHTML = "All tasks have not been assigned to sprints"
+          document.getElementById('alert-dark').style.display = "block"
+          setTimeout(alert_disappear,5000)
+        }else{
+
+          board_list = []
+          all_boards = document.getElementsByClassName('kanban-board')
+          var start_date = new Date('<%- project_start_date %>')
+          
+          for (let index = 1; index < all_boards.length; index++) {
+            const element = all_boards[index]; //Loop for each sprint board
+            SprintID = element.getAttribute('data-id');
+            title = element.children[0].children[0].innerHTML;
+            
+            var end_date = new Date(new Date(start_date).getTime() + (element.children[0].children[1].children[0].innerHTML * 24 * 60 * 60 * 1000)-1);
+            
+            boards = {
+              sprintID: SprintID,
+              title: title,
+              start_date: start_date,
+              end_date: end_date,
+              tasks: []
+            };
+            start_date = end_date
+            board_list.push(boards)
+            
+            functionality_list = []
+            all_board_items = element.children[1].children    //main tag
+            for (const item of all_board_items) {  //Loop for each item in board
+              //console.log(item.getAttribute('data-eid'))   //For ItemID (functionality._id)
+              Functionalities = {
+                _id: item.getAttribute('data-eid'),
+                Functionality: item.innerHTML,
+                SprintPhase: title
+              }
+              functionality_list.push(Functionalities)
+            }
+            console.log(functionality_list)
+            boards.tasks.push(functionality_list)
+          }
+          
+          
+          //Ajax POST request
+          $.ajax({
+            type: 'POST',
+            url: '/Sprints',
+            data: {
+              board_list: JSON.stringify(board_list),
+              Functionalities: JSON.stringify(functionality_list)
+            },
+            success: function(){
+              window.location.href= 'http://localhost:3000/Kanban'
+            }
+          })
+        }
+        
+      }
+        //Array to load data to the board
+        data.forEach((element)=>{
+        console.log(element)
+        KanbanTest.addElement("_unassigned", element);
+      })
+    </script>
+</body>
+
+</html>

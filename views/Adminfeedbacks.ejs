@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            View Feedbacks
+        </title>
+        <link rel="icon" href="./img/sandbox.png">
+        
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="./css/style.css">
+        <link rel="stylesheet" type="text/css" href="./css/Navbar.css">
+    </head>
+    <body>
+        <%- include('partials/Adminnavbar.ejs') %>
+        <div style="text-align: center; margin:40px ;"><h4>User Feedbacks</h4></div>
+        
+        <main style="margin-top: -180px;">
+            <div class="col-11">
+                <table class="table table-bordered" style="border:2px solid black;">
+                    <thead style="border:2px solid black;">
+                    <tr style="border:2px solid black;">
+                        <th scope="col" style="border:2px solid black;">ID</th>
+                        <th scope="col" style="border:2px solid black;">Title</th>
+                        <th scope="col" style="border:2px solid black;">Feedback</th>
+                    </tr>
+                    </thead>
+                    <tbody style="border:2px solid black;">
+                        <%feedbacks.forEach((element)=>{%>
+                            <tr style="border:2px solid black;">
+                            <th scope="row" style="border:2px solid black;"><%-element._id%></th>
+                            <td style="border:2px solid black;"><%-element.title%></td>
+                            <td style="border:2px solid black;"><%-element.feedback%></td>
+                            </tr>
+                        <%})%>
+                    </tbody>
+                </table>
+            </div>
+            
+
+        </main>
+        
+
+    </body>
+    </html>

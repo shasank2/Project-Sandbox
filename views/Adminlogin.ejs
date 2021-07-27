@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Admin Login
+        </title>
+        <link rel="icon" href="./img/sandbox.png">
+        
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="./css/style.css">
+        <link rel="stylesheet" type="text/css" href="./css/Welcome.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <h3 class="nav-brand">Project Sandbox</h3>
+            </div>
+        </nav>
+        <%- include('partials/message.ejs') %> 
+        <!-- <div  class="alert alert-success" role="alert"><strong>Well done!</strong></div> -->
+        <main>
+                <h2>Admin Panel Login</h2>
+                        <!-- Login up form -->
+                            <form action="/Adminlogin" method="POST" style="margin-top: 20px;" class="row-2">
+                                <div class="col-2 justify-content-center email_div" style="margin-left: 60px;">
+                                    <label for="username">Username</label>
+                                    <input type="text" name="username" id="username" style="width: 260px;">
+                                </div>
+                                <div class="col-2 justify-content-center password_div" style="margin-left: 60px; margin-top: 10px;">
+                                    <label for="password">Password</label>
+                                    <input type="password"  name="password" id="password" style="width: 260px;">
+                                </div>
+                                    <button type="submit" style="margin-left: 110px; margin-top: 30px;">Login</button>
+                            </form>
+        </main>
+    </body>
+    </html>

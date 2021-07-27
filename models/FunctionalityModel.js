@@ -8,11 +8,22 @@ const FunctionalitySchema = new mongoose.Schema({
     Description:{
         type:String
     },
-    Status:{
+    SprintPhase:{
+        type: String,   //Use sprintID ("data-id" attribute in HTML)
+        default: 'Unassigned Tasks'
+    },
+    start_date:{
+        type: Date,
+    },
+    end_date:{
+        type: Date,
+    },
+    status:{
         type:String,
-        enum: ['Complete','Incomplete'],
-        default: 'Incomplete'
+        enum: ['To Do','Doing','Done'],
+        default: 'To Do'
     }
+    
 })
 
 module.exports = mongoose.model('Functionality',FunctionalitySchema)

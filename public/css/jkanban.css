@@ -1,11 +1,12 @@
 .kanban-container {
   position: relative;
   box-sizing: border-box;
-  width: auto;
+  width: 450px;
 }
 
 .kanban-container * {
   box-sizing: border-box;
+  overflow-x: auto;
 }
 
 .kanban-container:after {
@@ -16,9 +17,14 @@
 
 .kanban-board {
   position: relative;
+  max-width: 400px;
+  min-height: 350px;
   float: left;
-  background: #f9fcff;
+  background: rgb(247, 219, 185);
   transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  border: 1px solid black;
+  border-radius: 8px;
+  display: inline;
 }
 
 .kanban-board.disabled-board {
@@ -37,6 +43,7 @@
 .kanban-board header {
   font-size: 16px;
   padding: 15px;
+  background-color: rgb(255, 175, 83);
 }
 
 .kanban-board header .kanban-title-board {
@@ -62,7 +69,8 @@
 }
 
 .kanban-item {
-  background: #fff;
+  background: rgb(253, 217, 150);
+  border-radius: 5px;
   padding: 15px;
   margin-bottom: 20px;
   border: solid 1px black;

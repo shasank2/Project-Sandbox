@@ -37,11 +37,11 @@ h3{
 }
 
 .Contents >li:hover {
-    background-color: rgb(131, 131, 131);
+    background-color: rgb(250, 205, 145);
 }
 
 .Contents >li.active{
-    background-color: rgb(131, 131, 131);
+    background-color: rgb(250, 205, 145);
 }
 
 #display_col{
@@ -73,7 +73,7 @@ h3{
 }
 
 .methodology-info>.col-8{
-    background-color: white;
+    background-color: rgb(252, 231, 205);
     border: 1px solid black;
     margin-left: -55px;
 }
@@ -86,11 +86,11 @@ h3{
     width: 170px;
     font-weight: bold;
     border-width: 3px;
+    background-color: rgb(245, 200, 142);
 }
 .container button:hover{
     background-color: rgb(188, 188, 192);
-    transition: 500ms;
-    border: 3px solid black;
+    transition: 300ms;
 }
 
 

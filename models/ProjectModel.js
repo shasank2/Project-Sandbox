@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Sprints = require('./SprintsModel').schema;
 
 const ProjectSchema = new mongoose.Schema({
     title:{
@@ -11,11 +12,10 @@ const ProjectSchema = new mongoose.Schema({
     },
     functionality_id:[], //list of foregin keys
     
-    methodology_id:{   //foreign key
-        type: String,
-        default: 'none',
-        required: true
-    },
+    sprints:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Sprints'
+    }],
     start_date:{
         type: Date,
         required:true
@@ -29,5 +29,10 @@ const ProjectSchema = new mongoose.Schema({
         enum: ['Complete','Incomplete'],
         default: 'Incomplete'
     }
+    // methodology_id:{   //foreign key
+    //     type: String,
+    //     default: 'none',
+    //     required: true
+    // },
 })
 module.exports = mongoose.model('Project', ProjectSchema);

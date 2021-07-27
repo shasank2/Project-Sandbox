@@ -26,7 +26,7 @@ function checkActive() {
                 url: '/Methodologies',
                 data : {selectedTab},
                 success: function(data){
-                    window.location='/Kanban'
+                    window.location='/Projects'
                 }
             })
             

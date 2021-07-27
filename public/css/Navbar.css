@@ -14,11 +14,13 @@ ul > li {
     margin-right: 18px;
 }
 a{
-    color: rgb(70, 70, 70);
+    color: rgb(37, 36, 36);
 }
 a:hover{
     text-decoration: none;
-    color: black;
+    color: rgb(0, 0, 0);
+    text-shadow: 1px 0px 0px #c5bdbd;
+    transition: 300ms;
 }
 h3{
     padding-top: 7px;

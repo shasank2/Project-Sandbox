@@ -15,7 +15,6 @@ const GetProjectByID = (projectID)=>{
         }
     })
 }
-
 const GetFunctionality = (funcID)=>{
     functionalityM.find({_id:funcID}).exec((err,results)=>{
         if (err) {
@@ -25,5 +24,4 @@ const GetFunctionality = (funcID)=>{
         }
     })
 }
-
 module.exports={GetProjectByID}

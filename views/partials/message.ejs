@@ -1,5 +1,4 @@
 <% if (errors == ''){ %>
-
 <% } else{%>
         <div class="d-flex justify-content-center">
             <div style="width:99%; text-align:center" class="alert alert-primary" role="alert">
@@ -8,11 +7,15 @@
         </div>
 <%}%>
 
-<% if(locals.message){ %>
-    <div class="alert alert-success" role="alert">
-        <strong>Well done!</strong> <%=message.success%>
+<% if (adminError == ''){ %>
+<%} else {%>
+    <div class="d-flex justify-content-center">
+        <div style="width:99%; text-align:center" class="alert alert-primary" role="alert">
+            <%-adminError%>
+        </div>
     </div>
-<% } %>
+<%}%>
+
 
 
 <% //errs = JSON.stringify(errors.errors) %>
