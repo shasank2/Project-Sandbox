@@ -3,18 +3,18 @@ const router = express.Router();
 
 const bcrypt = require('bcryptjs')
 
-const { body,validationResult, Result } = require('express-validator');
+const { body, validationResult, Result } = require('express-validator');
 
 //imports form GetUserProject
-const {getProjects} = require('../public/js/GetUserProject')
+const { getProjects } = require('../public/js/GetUserProject')
 const projObjectList = require('../public/js/GetUserProject')
 
 //imports form LoadGanttData
 //const {GetProjectByID} = require('../public/js/LoadGanttData')
 
 //Project variable
-var ProjectID ;
-var projectName 
+var ProjectID;
+var projectName
 var startdate;
 var enddate;
 //var UserID = '';
@@ -24,7 +24,7 @@ project_funcID = [];
 var project_title, project_description, project_start_date, project_end_date, project_remain_time;
 
 //For the project user selected to work with
-var userSelectedProject 
+var userSelectedProject
 //Objects of Functionalities for Kanban and Gantt chart
 var FuncObjects = [];
 
@@ -41,20 +41,20 @@ const feedbackM = require('./../models/FeedbackModel');
 //Sleep function
 function sleep(ms) {
     return new Promise((resolve) => {
-      setTimeout(resolve, ms);
+        setTimeout(resolve, ms);
     });
-  }  
+}
 
 //Add project to user model
-const userProjectsUpdate = async(UserID,ProjectID)=>{
+const userProjectsUpdate = async (UserID, ProjectID) => {
     try {
-        const userObj = await userM.findByIdAndUpdate({_id: UserID},{
-            $push:{
-                projects : ProjectID
+        const userObj = await userM.findByIdAndUpdate({ _id: UserID }, {
+            $push: {
+                projects: ProjectID
             }
-        },{
+        }, {
             new: true,
-            useFindAndModify: false 
+            useFindAndModify: false
         });
         console.log(userObj)
     } catch (error) {
@@ -63,23 +63,23 @@ const userProjectsUpdate = async(UserID,ProjectID)=>{
 }
 
 //Date formatter dd-mm-yyyy
-const DateFormat= (InputDate) =>{
+const DateFormat = (InputDate) => {
     var today;
     var dd = String(InputDate.getDate()).padStart(2, '0');
     var mm = String(InputDate.getMonth() + 1).padStart(2, '0');
     var yyyy = InputDate.getFullYear();
     today = dd + '/' + mm + '/' + yyyy;
-    return today.replace(/[/]/g,"-");
+    return today.replace(/[/]/g, "-");
 }
 
 //Have to add 1 day plus for end date format
-const EndDateFormat= (InputDate) =>{
+const EndDateFormat = (InputDate) => {
     var today;
-    var dd = String(InputDate.getDate() +5 ).padStart(2, '0');
+    var dd = String(InputDate.getDate() + 5).padStart(2, '0');
     var mm = String(InputDate.getMonth() + 1).padStart(2, '0');
     var yyyy = InputDate.getFullYear();
     today = dd + '/' + mm + '/' + yyyy;
-    return today.replace(/[/]/g,"-");
+    return today.replace(/[/]/g, "-");
 }
 
 //Load Gantt Data
@@ -106,20 +106,20 @@ const GetProjectByID = async (projectID) => {
         project_description = result.description
         project_start_date = result.start_date
         project_end_date = result.end_date
-        project_remain_time = RemTime(project_start_date,project_end_date)
+        project_remain_time = RemTime(project_start_date, project_end_date)
         result.functionality_id.forEach(element => {
             GetFunctionality(element)
         })
     })
 }
-        
 
-const GetFunctionality = async (funcID)=>{
+
+const GetFunctionality = async (funcID) => {
     FuncObjects = []
-    functionalityM.findOne({_id:funcID}).exec((err,results)=>{
+    functionalityM.findOne({ _id: funcID }).exec((err, results) => {
         if (err) {
             console.log(err)
-        } else {            
+        } else {
             FuncObjects.push(results)
         }
     })
@@ -127,11 +127,11 @@ const GetFunctionality = async (funcID)=>{
 }
 
 //Get remaining time
-const RemTime = (startdate,enddate)=>{
+const RemTime = (startdate, enddate) => {
     var remain
-    var one_day=1000*60*60*24
-    remain = Math.abs(enddate-startdate)
-    remain = Math.round(remain/one_day)
+    var one_day = 1000 * 60 * 60 * 24
+    remain = Math.abs(enddate - startdate)
+    remain = Math.round(remain / one_day)
     return remain + 1      // have to add 1 day for remaining days because of date reasons
 }
 
@@ -143,54 +143,54 @@ const { text } = require('body-parser');
 // const { session } = require('passport');
 
 //Get requests
-router.get('/',(req,res)=>{
-    res.render('Welcome',{
-        errors:'',
-        adminError:''
+router.get('/', (req, res) => {
+    res.render('Welcome', {
+        errors: '',
+        adminError: ''
     })
 })
 
-router.get('/Create',(req,res)=>{
+router.get('/Create', (req, res) => {
     res.render('Create')
 })
 
-router.get('/Projects',async (req,res)=>{
+router.get('/Projects', async (req, res) => {
     let projectList = await getProjects(req.user._id)
-    res.render('Projects',{
-        'project':projectList
+    res.render('Projects', {
+        'project': projectList
     })
 })
 
-router.get('/Methodologies',(req,res)=>{
+router.get('/Methodologies', (req, res) => {
     res.render('Methodologies')
 })
 
-router.get('/Contacts',(req,res)=>{
-    res.render('Contacts',{message:req.flash('message')})
+router.get('/Contacts', (req, res) => {
+    res.render('Contacts', { message: req.flash('message') })
 })
 
-router.get('/About',(req,res)=>{
+router.get('/About', (req, res) => {
     res.render('About')
 })
 
-router.get('/Sprints', async (req,res)=>{
-    data=[]
+router.get('/Sprints', async (req, res) => {
+    data = []
     await project_funcID.forEach((element) => {
         GetFunctionality(element)
     });
     await sleep(500)
     console.log(FuncObjects)
-    FuncObjects.forEach(element=>{
+    FuncObjects.forEach(element => {
         var obj = {
             id: element._id,
             title: element.Functionality,
-            description:element.Description,
-            sprint_phase:element.SprintPhase,
-            status:element.status
+            description: element.Description,
+            sprint_phase: element.SprintPhase,
+            status: element.status
         }
         data.push(obj)
     })
-    res.render('Sprints',{
+    res.render('Sprints', {
         'remainingtime': project_remain_time,
         'project_start_date': project_start_date,
         'project_end_date': project_end_date,
@@ -198,32 +198,73 @@ router.get('/Sprints', async (req,res)=>{
     })
 })
 
-router.get('/Teams',(req,res)=>{
+router.get('/Teams', (req, res) => {
 
     res.render('Teams')
 })
 
-router.get('/GanttChart',(req,res)=>{
-    data=[{
-        id : 1,
-        text : project_title,
-        start_date: project_start_date,
-        duration: project_remain_time,
-        end_date: project_end_date,
-    }]
-    FuncObjects.forEach(element=>{
-        var obj = {
-            id: element._id,
-            text: element.Functionality,
-            start_date: startdate,
-            duration: 1,
-            parent: 1
+router.get('/GanttChart', async (req, res) => {
+    // data=[{
+    //     id : 1,
+    //     text : project_title,
+    //     start_date: project_start_date,
+    //     duration: project_remain_time,
+    //     end_date: project_end_date,
+    // }]
+    // FuncObjects.forEach(element=>{
+    //     var obj = {
+    //         id: element._id,
+    //         text: element.Functionality,
+    //         start_date: startdate,
+    //         duration: 1,
+    //         parent: 1
+    //     }
+    //     data.push(obj);
+    // })
+    data = []
+    id = 1;
+    projectM.findById({ _id: userSelectedProject }).exec((err, project) => {
+        var first_obj = {
+            id: id,
+            text: project.title,
+            start_date: project.start_date,
+            end_date: project.end_date
         }
-        data.push(obj);
+        data.push(first_obj)
+
+        sprintsM.find({ _id: project.sprints }).exec((err, sprints) => {
+            sprints.forEach(async (sprint) => {
+                id += 1
+                var second_obj = {
+                    id: id,
+                    text: sprint.title,
+                    start_date: sprint.start_date,
+                    end_date: sprint.end_date,
+                    parent: first_obj.id
+                }
+                data.push(second_obj)
+                await sleep(500)
+                sprint.tasks.forEach((task) => {
+                    functionalityM.findOne({ _id: task }).exec((err, result) => {
+                        console.log(result)
+                        id += 1
+                        var third_obj = {
+                            id: id,
+                            text: result.Functionality,
+                            start_date: result.start_date,
+                            end_date: result.end_date,
+                            parent: second_obj.id
+                        }
+                        data.push(third_obj)
+                    })
+                })
+            })
+        })
     })
-    console.log(data)
-    res.render('GanttChart',{ 
-        'LoadedFunctionalities':data
+    await sleep(2000)
+    //console.log(data)
+    res.render('GanttChart', {
+        'LoadedFunctionalities': data
     })
 })
 
@@ -231,81 +272,81 @@ router.get('/GanttChart',(req,res)=>{
 //     var tasks = req.body;  
 //     console.log(tasks)
 //   });
-   
+
 //   // update a task
 //   router.put("/api/", function (req, res) {
 //     var sid = req.params.id,
 //       tasks = getTask(req.body);
 //       console.log(tasks)
 //   });
-   
+
 //   // delete a task
 //   router.delete("/api/", function (req, res) {
 //     var sid = req.params.id;
 //   });
-   
 
-router.get('/Kanban',async (req,res)=>{
+
+router.get('/Kanban', async (req, res) => {
     UndefFuncObjects = []
     FuncObjects = []
     SprintObject = []
 
-    projectM.findById({_id:userSelectedProject})
-    .populate('sprints')
-    .exec(async(err,results)=>{  
-        console.log(results)      
-        results.sprints.forEach(async(element)=>{
-            var obj_a = {
-                id: element._id,
-                title: element.title,
-                sprintID: element.sprintID,
-                start_date: element.start_date,
-                end_date: element.end_date,
-                remainingtime: RemTime(element.start_date, element.end_date),
-                status: element.status,
-                tasks : []
-            }
-            console.log(obj_a)
-            element.tasks.forEach((el)=>{
-                functionalityM.findById({_id:el}).exec((err,func)=>{
-                    UndefFuncObjects.push(func)
-                    var obj_b = {
-                        id: func._id,
-                        title: func.Functionality,
-                        SprintPhase: func.SprintPhase,
-                        status: func.status,
-                    }
-                    obj_a.tasks.push(obj_b)
+    projectM.findById({ _id: userSelectedProject })
+        .populate('sprints')
+        .exec(async (err, results) => {
+            console.log(results)
+            results.sprints.forEach(async (element) => {
+                var obj_a = {
+                    id: element._id,
+                    title: element.title,
+                    sprintID: element.sprintID,
+                    start_date: element.start_date,
+                    end_date: element.end_date,
+                    remainingtime: RemTime(element.start_date, element.end_date),
+                    status: element.status,
+                    tasks: []
+                }
+                console.log(obj_a)
+                element.tasks.forEach((el) => {
+                    functionalityM.findById({ _id: el }).exec((err, func) => {
+                        UndefFuncObjects.push(func)
+                        var obj_b = {
+                            id: func._id,
+                            title: func.Functionality,
+                            SprintPhase: func.SprintPhase,
+                            status: func.status,
+                        }
+                        obj_a.tasks.push(obj_b)
+                    })
+
                 })
-            
+                await sleep(500)
+                SprintObject.push(obj_a)
             })
             await sleep(500)
-            SprintObject.push(obj_a)
+            console.log(SprintObject)
         })
-        await sleep(500)
-        console.log(SprintObject)
-    })
     await sleep(1000)
-    res.render('Kanban',{ 
-        'LoadedFunctionalities':SprintObject 
+    res.render('Kanban', {
+        'LoadedFunctionalities': SprintObject
     })
 })
 
-router.post('/Sprints',(req,res)=>{
+router.post('/Sprints', (req, res) => {
     console.log("post request sprint");
     sprint_id_list = []
     functionality_data = JSON.parse(req.body.Functionalities)
     sprint_data = JSON.parse(req.body.board_list);
 
     //Saving each Sprint
-    sprint_data.forEach(async(element) => {
+    sprint_data.forEach(async (element) => {
         sprint = new sprintsM({
             sprintID: element.sprintID,
             title: element.title,
             start_date: element.start_date,
             end_date: element.end_date
         })
-        element.tasks.forEach((el)=>{
+        element.tasks.forEach((el) => {
             sprint.tasks = el
         })
         sprint_id_list.push(sprint._id)
@@ -321,10 +362,10 @@ router.post('/Sprints',(req,res)=>{
                 console.log(result)
             })
     })
- 
+
     //Updating Project Sprints
-    project = projectM.findOne({_id:ProjectID}).exec((err,results)=>{
-        sprint_id_list.forEach(element=>{
+    project = projectM.findOne({ _id: ProjectID }).exec((err, results) => {
+        sprint_id_list.forEach(element => {
             results.sprints.push(element)
         })
         results.save()
@@ -332,19 +373,19 @@ router.post('/Sprints',(req,res)=>{
     res.redirect('/Kanban')
 })
 
-router.post('/Kanban',(req,res)=>{
+router.post('/Kanban', (req, res) => {
     console.log("Post request for Kanban")
     list_update = JSON.parse(req.body.list_update)
-    list_update.forEach((el)=>{
-        functionality = functionalityM.findOneAndUpdate({_id:el.id},
-        { $set: { status: el.status, start_date:el.start_date, end_date:el.end_date} }, { useFindAndModify: false })
-        .exec((err,result)=>{
-            console.log(result)
-        })
+    list_update.forEach((el) => {
+        functionality = functionalityM.findOneAndUpdate({ _id: el.id },
+            { $set: { status: el.status, start_date: el.start_date, end_date: el.end_date } }, { useFindAndModify: false })
+            .exec((err, result) => {
+                console.log(result)
+            })
     })
 })
 
-router.post('/Projects',(req,res)=>{
+router.post('/Projects', (req, res) => {
     userSelectedProject = req.body.h4ID
     projectName = req.body.h4Name
     res.redirect('/Kanban')
@@ -353,19 +394,19 @@ router.post('/Projects',(req,res)=>{
 
 //Post requests
 router.post('/signup',
-    body('username').trim().isLength({min:8}).withMessage('Username must be at least 8 characters long'),
+    body('username').trim().isLength({ min: 8 }).withMessage('Username must be at least 8 characters long'),
     body('email').trim().isEmail().normalizeEmail()
-    .custom((value,{req, loc, path}) => {
-        return userM.findOne({ email:req.body.email }).then(user => {
-          if (user) {
-            return Promise.reject('E-mail already in use');
-          }
-        });
-      }),
-    body('password').isLength({min: 8}).withMessage('Password must be at least 10 characters long'),
+        .custom((value, { req, loc, path }) => {
+            return userM.findOne({ email: req.body.email }).then(user => {
+                if (user) {
+                    return Promise.reject('E-mail already in use');
+                }
+            });
+        }),
+    body('password').isLength({ min: 8 }).withMessage('Password must be at least 10 characters long'),
     body('conf_password').custom((value, { req }) => {
         if (value !== req.body.password) {
-          throw new Error('Password confirmation does not match password');
+            throw new Error('Password confirmation does not match password');
         }
         return true
     }),
@@ -373,26 +414,26 @@ router.post('/signup',
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
-            res.render('Welcome',{ errors:errors,adminError:'' })
-            console.log(errors) 
+            res.render('Welcome', { errors: errors, adminError: '' })
+            console.log(errors)
 
         }
-        else{
+        else {
             let user = new userM({
-                username : req.body.username,
-                email : req.body.email,
-                password : req.body.password,
-                conf_password : req.body.conf_password
+                username: req.body.username,
+                email: req.body.email,
+                password: req.body.password,
+                conf_password: req.body.conf_password
             })
 
-            bcrypt.genSalt(10, (err, salt)=>{
-                bcrypt.hash(user.password,salt,(err,hash)=>{
+            bcrypt.genSalt(10, (err, salt) => {
+                bcrypt.hash(user.password, salt, (err, hash) => {
                     if (err) throw err;
-                    user.password = hash 
+                    user.password = hash
 
-                    user.save((err)=>{
-                        if(err){console.log(err)}
-                        else{ 
+                    user.save((err) => {
+                        if (err) { console.log(err) }
+                        else {
                             req.flash('success', 'Registered successfully and ready to Login')
                             res.locals.message = req.flash();
                             console.log('registered')
@@ -403,16 +444,16 @@ router.post('/signup',
             })
         }
     })
-    
-router.post('/login',(req,res,next)=>{
-    passport.authenticate('local',{
+
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', {
         successRedirect: 'Projects',
         failureRedirect: 'back',
         failureFlash: true
-    })(req,res,next);
+    })(req, res, next);
 })
 
-router.post('/Create',(req,res)=>{
+router.post('/Create', (req, res) => {
     UserID = req.user._id
 
     //variables for this create process
@@ -420,8 +461,8 @@ router.post('/Create',(req,res)=>{
     project_title = req.body.title
     project_description = req.body.description
     project_start_date = new Date(req.body.startdate)
-    project_end_date = new Date(req.body.enddate) 
-    project_remain_time = RemTime(project_start_date,project_end_date);
+    project_end_date = new Date(req.body.enddate)
+    project_remain_time = RemTime(project_start_date, project_end_date);
     project_funcID = [];
 
     //first the functionality is saved to its model//
@@ -429,39 +470,39 @@ router.post('/Create',(req,res)=>{
     const funcArray = func.split(',')
     funcArray.forEach(element => {
         let functionalities = new functionalityM({
-            Functionality:element,
-        }) 
+            Functionality: element,
+        })
 
         //adding list of functionality id in an empty list
         project_funcID.push(functionalities._id)
 
-        functionalities.save((err)=>{
-            if(err){console.log(err)}
-            else{
+        functionalities.save((err) => {
+            if (err) { console.log(err) }
+            else {
                 console.log(`functionality ${functionalities._id} added to database`)
             }
         })
     });
-    
+
     //finally working on project created
     //let datetime = new Date();
     let project = new projectM({
-        title : project_title,
-        description :  project_description,
-        start_date :  project_start_date,
-        end_date :  project_end_date,
-        functionality_id : project_funcID
+        title: project_title,
+        description: project_description,
+        start_date: project_start_date,
+        end_date: project_end_date,
+        functionality_id: project_funcID
     })
 
     //Saving project_id to be used for next route/for query
     ProjectID = project._id
     userSelectedProject = project._id
-    project.save( async (err)=>{
-        if(err){console.log(err)}
-        else{
+    project.save(async (err) => {
+        if (err) { console.log(err) }
+        else {
             console.log('Project created')
             //Add Project to user function here//// not used any more
-            userProjectsUpdate(UserID,ProjectID)
+            userProjectsUpdate(UserID, ProjectID)
             GetProjectByID(ProjectID)
         }
     })
@@ -501,16 +542,16 @@ router.post('/Create',(req,res)=>{
 // })
 
 //Post route for sending feedback
-router.post('/Contacts',(req,res)=>{
+router.post('/Contacts', (req, res) => {
     let feedback = new feedbackM({
-        title:req.body.title,
-        feedback:req.body.feedback,
-        user_id:req.user._id
+        title: req.body.title,
+        feedback: req.body.feedback,
+        user_id: req.user._id
     })
-    feedback.save((err)=>{
-        if(err){console.log(err)}
-        else{
-            req.flash('message','Your feedback has been submitted.')
+    feedback.save((err) => {
+        if (err) { console.log(err) }
+        else {
+            req.flash('message', 'Your feedback has been submitted.')
             res.redirect('/Contacts')
         }
     })
@@ -524,40 +565,40 @@ router.get('/logout', (req, res) => {
 });
 
 //Routes for admin panel
-router.get('/Adminlogin',(req,res)=>{
-    res.render('Adminlogin',{
-        errors:'',
-        adminError:''
+router.get('/Adminlogin', (req, res) => {
+    res.render('Adminlogin', {
+        errors: '',
+        adminError: ''
     })
 })
 
-router.get('/Adminuser',(req,res)=>{
+router.get('/Adminuser', (req, res) => {
     res.render('Adminuser')
 })
 
-router.get('/Adminfeedbacks',(req,res)=>{
-    const getFeedbacks = async ()=>{
+router.get('/Adminfeedbacks', (req, res) => {
+    const getFeedbacks = async () => {
         await feedbackM.find()
-        .then((value)=>{
-            console.log(value)
-            res.render('Adminfeedbacks',{
-                'feedbacks' : value
+            .then((value) => {
+                console.log(value)
+                res.render('Adminfeedbacks', {
+                    'feedbacks': value
+                })
             })
-        })  
     }
     getFeedbacks()
 })
 
-router.get('/Adminprojects',(req,res)=>{
+router.get('/Adminprojects', (req, res) => {
     res.render('Adminprojects')
 })
 
-router.post('/Adminlogin',(req,res)=>{
+router.post('/Adminlogin', (req, res) => {
     if (req.body.username != "admin") {
         adminError = "Wrong password"
         console.log("Wrong admin Username")
         res.redirect('/Adminlogin')
-    }else if (req.body.password != "admin") {
+    } else if (req.body.password != "admin") {
         adminError = "Wrong username"
         console.log("Wrong admin password")
         res.redirect('/Adminlogin')
